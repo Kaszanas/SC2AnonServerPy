@@ -1,0 +1,13 @@
+# Directories
+.vscode/
+__pycache__/
+.ipynb_checkpoints/
+
+# Files
+*.dem
+*.json
+*.ipynb
+*.pickle
+*.rar
+
+*.html
