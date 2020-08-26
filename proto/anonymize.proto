@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service AnonymizeService {
+    rpc ping (SendNickname) returns (ReceiveID);
+}
+
+message SendNickname {
+    string nickname = 1;
+}
+
+message ReceiveID {
+    int32 anonymizedID = 1;
+}
