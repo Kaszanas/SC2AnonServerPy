@@ -22,7 +22,7 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     anonymize_pb2_grpc.add_AnonymizeServiceServicer_to_server(Listener(), server)
-    server.add_insecure_port()
+    server.add_insecure_port("[::]:9999")
     server.start()
 
     try:
