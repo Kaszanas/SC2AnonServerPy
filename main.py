@@ -10,7 +10,6 @@ import sc2reader
 from PACAnalyzer.pacanalyzer import PACAnalyzer
 import pickle
 
-
 sc2reader.engine.register_plugin(PACAnalyzer())
 
 def anonymize_nicknames(replay):
@@ -25,6 +24,7 @@ def anonymize_nicknames(replay):
 
     return replay
 
+
 def anonymize(replay):
     # Delete player
     replay = anonymize_nicknames(replay)
@@ -34,8 +34,8 @@ def anonymize(replay):
 
     return replay
 
-def process_replays(replays_directory):
-    loop_start_time = datetime.now()
+
+def process_replays(replays_directory:str):
     replays = sc2reader.load_replays(f'{replays_directory}', load_level=4)
     for index, replay in enumerate(replays):
 
