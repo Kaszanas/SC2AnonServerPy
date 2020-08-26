@@ -9,11 +9,15 @@ import os
 sc2reader.engine.register_plugin(PACAnalyzer())
 
 
+def anonymize_nicknames(replay):
+    return replay
+
 def anonymize(replay):
     # Delete player
-    replay.client[0].name = random.randint(0, 100)
-    replay.client[0].toon_handle = None
-    replay.client[0].toon_id = None
+    replay = anonymize_nicknames(replay)
+    replay.client[0].toon_handle = 'redacted'
+    replay.client[0].toon_id = 'redacted'
+    replay.client[0].url = 'redacted'
 
     return replay
 
