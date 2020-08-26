@@ -1,7 +1,9 @@
+// python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/anonymize.proto
+
 syntax = "proto3";
 
 service AnonymizeService {
-    rpc ping (SendNickname) returns (ReceiveID);
+    rpc getAnonymizedID (SendNickname) returns (ReceiveID);
 }
 
 message SendNickname {
