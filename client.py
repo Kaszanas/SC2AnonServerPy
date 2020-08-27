@@ -41,4 +41,4 @@ def process_replay(replay_file:str, output_dir:str):
     name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
     replay = anonymize(replay)
     with open(f'{output_dir + name_of_replay}.pickle', 'wb') as f:
-        pickle.dump(anonymize(replay), f)
+        pickle.dump(replay, f)
