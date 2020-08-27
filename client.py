@@ -35,7 +35,7 @@ def anonymize(replay):
     return replay
 
 
-def process_replays(replay_file:str, output_dir:str):
+def process_replay(replay_file:str, output_dir:str):
     replay = sc2reader.load_replay(f'{replay_file}', load_level=4)
 
     name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
