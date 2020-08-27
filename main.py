@@ -1,45 +1,26 @@
+from client import process_replays, anonymize, anonymize_nicknames
+import multiprocessing as mp
+import argparse
 import os
 
-# gRPC imports:
-import grpc
-import anonymize_pb2
-import anonymize_pb2_grpc
+# Initiate multiprocessing spawning processes that are using load_replay
+# This must be done by popping a list so that processes don't have the same replay by accident.
 
-# Replay processing imports:
-import sc2reader
-from PACAnalyzer.pacanalyzer import PACAnalyzer
-import pickle
+def get_replays(replay_directory:str):
 
-sc2reader.engine.register_plugin(PACAnalyzer())
+    absolute_filepaths = []
+    for replay in os.listdir(replay_directory):
+        if replay.endswith(".SC2Replay"):
+            absolute_filepaths.append(os.path.abspath(replay))
 
-def anonymize_nicknames(replay):
-    nicknames = [replay.client[0], replay.client[1]] # TODO: Fix this line for the exact object
-
-    with grpc.insecure_channel("localhost:9999") as channel:
-        stub = anonymize_pb2_grpc.AnonymizeServiceStub(channel)
-
-        for index, nickname in enumerate(nicknames):
-            response = stub.getAnonymizedID(anonymize_pb2.SendNickname(nickname=nickname))
-            replay.client[index] = response # TODO: Fix this line for the exact object
-
-    return replay
+    return absolute_filepaths
 
 
-def anonymize(replay):
-    # Delete player
-    replay = anonymize_nicknames(replay)
-    replay.client[0].toon_handle = 'redacted'
-    replay.client[0].toon_id = 'redacted'
-    replay.client[0].url = 'redacted'
+def start_processing(replay_directory:str):
 
-    return replay
+    list_of_replays = get_replays(replay_directory)
 
-
-def process_replays(replays_directory:str):
-    replays = sc2reader.load_replays(f'{replays_directory}', load_level=4)
-    for index, replay in enumerate(replays):
-
-        name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
-        replay = anonymize(replay)
-        with open(f'./DEMOS/Output/{name_of_replay}.pickle', 'wb') as f:
-            pickle.dump(anonymize(replay), f)
+    process_jobs = []
+    while process_jobs < 24:
+        while list_of_replays:
+            p = mp.Process(target=process_replays, args=(list_of_replays.pop(),))
