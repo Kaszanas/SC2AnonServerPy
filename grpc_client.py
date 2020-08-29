@@ -11,6 +11,9 @@ import sc2reader
 from PACAnalyzer.pacanalyzer import PACAnalyzer
 import pickle
 
+# Own imports:
+from settings import LOGGING_FORMAT
+
 sc2reader.engine.register_plugin(PACAnalyzer())
 
 CONNECTION = None
@@ -19,15 +22,17 @@ def initialize_worker():
 
     global CONNECTION
 
-    # TODO: Comment
-    logging.basicConfig(level=logging.DEBUG)
-    # TODO: Comment
+    logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
+
+    # Creating connection once per batch of replay files:
     CONNECTION = grpc.insecure_channel("localhost:9999")
 
     logging.info("Initialized Worker")
 
 
 def anonymize_nicknames(replay, stub):
+
+    logging.info("Entered anonymize nicknames")
 
     for key, client in replay.client.items():
 
@@ -43,8 +48,9 @@ def anonymize_nicknames(replay, stub):
 
 def anonymize(replay, stub):
 
+    logging.info("Entered anonymize")
+
     # Anonymizing known sensitive variables by hand (there should always be 2 players in 1v1 ranked play)
-    # TODO: for all clients
     for key, client in replay.client.items():
         client.toon_handle = 'redacted'
         client.toon_id = 'redacted'
