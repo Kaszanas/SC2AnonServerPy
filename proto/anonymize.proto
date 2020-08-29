@@ -11,5 +11,5 @@ message SendNickname {
 }
 
 message ReceiveID {
-    int32 anonymizedID = 1;
+    string anonymizedID = 1;
 }
