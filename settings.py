@@ -1,0 +1,1 @@
+LOGGING_FORMAT = "[%(asctime)s][%(name)s][%(module)s][%(levelname)s] - %(message)s"
