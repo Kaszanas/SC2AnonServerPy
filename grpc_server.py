@@ -6,6 +6,9 @@ import logging
 import time
 import pickle
 import hashlib
+import datetime
+
+from settings import LOGGING_FORMAT
 
 
 class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
@@ -87,5 +90,5 @@ def serve():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
     serve()
