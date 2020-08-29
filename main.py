@@ -11,6 +11,7 @@ from itertools import product
 def get_replays(replay_directory:str):
 
     absolute_filepaths = []
+    # Listing the files available in a supplied directory, checking for the right extension and obtaining absolute path:
     for replay in os.listdir(replay_directory):
         if replay.endswith(".SC2Replay"):
             absolute_filepaths.append(os.path.abspath(replay))
@@ -20,15 +21,12 @@ def get_replays(replay_directory:str):
 
 def start_processing(replay_directory:str, output_directory:str):
 
+    # Getting a list of replay filepaths by using a helper function:
     list_of_replays = get_replays(replay_directory)
 
-    # process_jobs = []
-    # while process_jobs < 24:
-    #     while list_of_replays:
-    #         p = mp.Process(target=process_replays, args=(list_of_replays.pop(),))
-
-    agents = 23
-    chunksize = 20
+    # Defining available pool of processes for replay processing:
+    agents = 24
+    chunksize = 1000
     with Pool(processes=agents) as pool:
         replay = list_of_replays.pop()
-        pool.map(process_replay, product(replay, output_directory), chunksize)
+        pool.map(process_replay, product(list_of_replays, output_directory), chunksize)
