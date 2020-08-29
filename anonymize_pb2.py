@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0f\x61nonymize.proto\" \n\x0cSendNickname\x12\x10\n\x08nickname\x18\x01 \x01(\t\"!\n\tReceiveID\x12\x14\n\x0c\x61nonymizedID\x18\x01 \x01(\x05\x32@\n\x10\x41nonymizeService\x12,\n\x0fgetAnonymizedID\x12\r.SendNickname\x1a\n.ReceiveIDb\x06proto3'
+  serialized_pb=b'\n\x0f\x61nonymize.proto\" \n\x0cSendNickname\x12\x10\n\x08nickname\x18\x01 \x01(\t\"!\n\tReceiveID\x12\x14\n\x0c\x61nonymizedID\x18\x01 \x01(\t2@\n\x10\x41nonymizeService\x12,\n\x0fgetAnonymizedID\x12\r.SendNickname\x1a\n.ReceiveIDb\x06proto3'
 )
 
 
@@ -67,8 +67,8 @@ _RECEIVEID = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='anonymizedID', full_name='ReceiveID.anonymizedID', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
