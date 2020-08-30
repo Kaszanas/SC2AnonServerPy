@@ -8,6 +8,7 @@ import anonymize_pb2_grpc
 
 # Replay processing imports:
 import sc2reader
+from sc2reader.events.tracker import ChatEvent
 from PACAnalyzer.pacanalyzer import PACAnalyzer
 import pickle
 
@@ -63,12 +64,16 @@ def anonymize(replay, stub):
     replay = anonymize_nicknames(replay, stub)
     logging.info("Exited anonymize_nicknames, returning replay object")
 
+    replay = anonymize_chat(replay)
+
     return replay
 
 def anonymize_chat(replay):
 
-    pass
+    events = [not_chat for not_chat in replay.events if not isinstance(not_chat, ChatEvent)]
+    replay.events = events
 
+    return replay
 
 
 def process_replay(arguments:tuple):
@@ -77,19 +82,26 @@ def process_replay(arguments:tuple):
 
     try:
 
+        # Unpacking tuple of supplied arguments (this is required with multiprocessing)
         replay_file, output_dir = arguments
 
         # Opening communication with gRPC
+        logging.info("Initializing gRPC stub")
         stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
 
         # Loading the file
+        logging.info("Loading replay")
         replay = sc2reader.load_replay(replay_file, load_level=4)
 
         # Getting filename of the provided replay
+        logging.info("Checking replay filename")
         name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
+
+        logging.info("Calling anonymize()")
         replay = anonymize(replay, stub)
+
         with open(f'{output_dir + name_of_replay}.pickle', 'wb') as f:
             pickle.dump(replay, f)
 
     except:
-        logging.exception("Got exception")
+        logging.exception("Exception detected")
