@@ -69,7 +69,7 @@ def anonymize(replay, stub):
 
 def anonymize_chat(replay):
 
-    events = [not_chat for not_chat in replay.events if not not_chat.name == "ChatEvent"]
+    events = [None for not_chat in replay.messages if not_chat.name == "ChatEvent"]
     replay.events = events
 
     return replay
