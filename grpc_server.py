@@ -24,8 +24,12 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         logging.info(f"Received nickname = {request.nickname}")
 
         # TODO: use self.loaded data as the object to chech and hash the players
+        logging.info("Checking if nickname is not in currently defined {nickname: ID} mapping.")
         if request.nickname not in self.loaded_data:
+            logging.info("Nickname not within current mapping object.")
             self.loaded_data[request.nickname] = hashlib.md5(request.nickname.encode()).hexdigest()
+        else:
+            logging.info("Nickname is within current mapping. Reusing existing hash.")
 
         hashed_player = self.loaded_data[request.nickname]
 
@@ -65,26 +69,36 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 
         with open(self.pickle_filepath, mode="wb") as anonymized_db:
             logging.info(f"Opened {self.pickle_filepath} as anonymized_db.")
+
             logging.info("Attempting to dump all of recently mapped nicknames into a pickle file and save it.")
+            logging.info(f"Currently detected {len(self.loaded_data)} hashed nicknames.")
 
             pickle.dump(self.loaded_data, anonymized_db)
 
             logging.info("Successfully performed pickle.dump().")
 
-            # TODO: Get number of currently saved objects
-
 
 def serve():
+
+    logging.info("Attempting to initialize grpc server.")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
 
     # Initializing empty Listener:
+    logging.info("Initializing Listener() class with a file to keep hashed nicknames.")
     my_listener = Listener("./test_anonymized_players.pickle")
+
     # Loading pickle data which will be contained within class object:
+    logging.info("Calling .load_data() on initialized Listener to check if file used for hashing exists.")
     my_listener.load_data()
 
     # Starting server:
+    logging.info("Adding Service to server.")
     anonymize_pb2_grpc.add_AnonymizeServiceServicer_to_server(my_listener, server)
-    server.add_insecure_port("[::]:9999")
+
+    insecure_port = "[::]:9999"
+    logging.info(f"calling server.add_insecure_port({insecure_port}).")
+    server.add_insecure_port(insecure_port)
+    logging.info("Starting server by calling server.start().")
     server.start()
 
     # Logging server status:
@@ -94,11 +108,14 @@ def serve():
             time.sleep(10)
 
     except KeyboardInterrupt:
-        logging.info("Detected KeyboardInterrupt, Stopping server")
+        logging.info("Detected KeyboardInterrupt, Stopping server.")
+
+        logging.info("Calling .save_data() on Listener().")
         my_listener.save_data()
         server.stop(grace=10)
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
+    logging.info("Set up logging config, attempting to call serve().")
     serve()
