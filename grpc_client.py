@@ -8,7 +8,6 @@ import anonymize_pb2_grpc
 
 # Replay processing imports:
 import sc2reader
-from sc2reader.events.tracker import ChatEvent
 from PACAnalyzer.pacanalyzer import PACAnalyzer
 import pickle
 
@@ -70,7 +69,7 @@ def anonymize(replay, stub):
 
 def anonymize_chat(replay):
 
-    events = [not_chat for not_chat in replay.events if not isinstance(not_chat, ChatEvent)]
+    events = [not_chat for not_chat in replay.events if not not_chat.name == "ChatEvent"]
     replay.events = events
 
     return replay
