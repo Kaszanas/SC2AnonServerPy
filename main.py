@@ -6,7 +6,7 @@ import logging
 from itertools import product
 
 
-USE_MULTIPROCESSING = False
+USE_MULTIPROCESSING = True
 
 # Initiate multiprocessing spawning processes that are using load_replay
 # This must be done by popping a list so that processes don't have the same replay by accident.
@@ -33,7 +33,7 @@ def start_processing(replay_directory:str, output_directory:str):
 
 
         # Defining available pool of processes for replay processing:
-        agents = 1
+        agents = 3
         chunksize = 1000
         with Pool(processes=agents, initializer=initialize_worker) as pool:
             # test_var = list(product(list_of_replays, [output_directory]))
@@ -50,4 +50,4 @@ def start_processing(replay_directory:str, output_directory:str):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    start_processing("./DEMOS/Input", "./DEMOS/Output")
+    start_processing("./DEMOS/Input", "./DEMOS/Output/")

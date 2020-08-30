@@ -44,11 +44,14 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         try:
             with open(self.pickle_filepath, mode="rb") as anonymized_db:
                 # If there's already a dict there return it
+                logging.info("Attempting to load supplied DB of anonymized players.")
                 self.loaded_data = pickle.load(anonymized_db)
-                # TODO: How much objects in object
+
+                logging.info("Loaded existing database of {nickname: ID} mappings.")
+                logging.info(f"Detected {len(self.loaded_data)} nicknames that were hashed.")
 
         except:
-            # TODO: Couldn't find objects
+            logging.info("Did not detect any objects in .pickle for anonymizing nicknames.")
             self.loaded_data = {}
 
 
@@ -58,8 +61,15 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         Used before server shutdown to write all of the {"nickname": ID} mappings to a pickle file.
         """
 
+        logging.info("Entered save_data()")
+
         with open(self.pickle_filepath, mode="wb") as anonymized_db:
+            logging.info(f"Opened {self.pickle_filepath} as anonymized_db.")
+            logging.info("Attempting to dump all of recently mapped nicknames into a pickle file and save it.")
+
             pickle.dump(self.loaded_data, anonymized_db)
+
+            logging.info("Successfully performed pickle.dump().")
 
             # TODO: Get number of currently saved objects
 
