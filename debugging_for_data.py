@@ -10,9 +10,9 @@ print(messages_0)
 
 event_dict = {}
 for event in messages_0.events:
+    if event.name == "ChatEvent":
+        print(event.text)
     if event.name in event_dict:
         event_dict[event.name] = event_dict[event.name] + 1
     else:
         event_dict[event.name] = 1
-
-print(event_dict)
