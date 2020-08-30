@@ -34,6 +34,7 @@ def anonymize_nicknames(replay, stub):
 
     logging.info("Entered anonymize nicknames")
 
+    logging.info("Starting to iterate over players and anonymizing their nicknames")
     for key, client in replay.client.items():
 
         # Calling the server to see if the nicknames were already assigned with arbitrary anonymized ID:
@@ -41,7 +42,7 @@ def anonymize_nicknames(replay, stub):
 
         # Overwriting  existing values:
         client.name = response.anonymizedID
-
+    logging.info("Finished anonymizing nicknames")
 
     return replay
 
@@ -51,15 +52,24 @@ def anonymize(replay, stub):
     logging.info("Entered anonymize")
 
     # Anonymizing known sensitive variables by hand (there should always be 2 players in 1v1 ranked play)
+    logging.info("Starting to iterate over players, anonymizing toon_handle and toon_id")
     for key, client in replay.client.items():
         client.toon_handle = 'redacted'
         client.toon_id = 'redacted'
+    logging.info("Finished anonymizing toon_handle and toon_id")
 
     # Calling anonymize nicknames to check if they were processed before:
+    logging.info("Calling anonymize_nicknames()")
     replay = anonymize_nicknames(replay, stub)
-
+    logging.info("Exited anonymize_nicknames, returning replay object")
 
     return replay
+
+def anonymize_chat(replay):
+
+    pass
+
+
 
 def process_replay(arguments:tuple):
 
