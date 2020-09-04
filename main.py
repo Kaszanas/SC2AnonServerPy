@@ -33,7 +33,7 @@ def start_processing(replay_directory:str, output_directory:str):
 
 
         # Defining available pool of processes for replay processing:
-        agents = 3
+        agents = 22
         chunksize = 1000
         with Pool(processes=agents, initializer=initialize_worker) as pool:
             # test_var = list(product(list_of_replays, [output_directory]))
