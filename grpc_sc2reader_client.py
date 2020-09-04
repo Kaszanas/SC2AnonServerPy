@@ -85,22 +85,26 @@ def process_replay(arguments:tuple):
         replay_file, output_dir = arguments
 
         # Opening communication with gRPC
-        logging.info("Initializing gRPC stub")
+        logging.info("Initializing gRPC stub.")
         stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
 
         # Loading the file
-        logging.info("Loading replay")
+        logging.info("Loading replay.")
         replay = sc2reader.load_replay(replay_file, load_level=4)
 
         # Getting filename of the provided replay
-        logging.info("Checking replay filename")
+        logging.info("Checking replay filename.")
         name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
 
-        logging.info("Calling anonymize()")
+        logging.info("Calling anonymize().")
         replay = anonymize(replay, stub)
+        logging.info("Exited anonymize().")
+
 
         with open(f'{output_dir + name_of_replay}.pickle', 'wb') as f:
+            logging.info("Attempting to create .pickle file.")
             pickle.dump(replay, f)
+            logging.info("Created .pickle file with the result of processing.")
 
     except:
         logging.exception("Exception detected")
