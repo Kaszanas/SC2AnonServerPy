@@ -1,4 +1,4 @@
-from grpc_client import process_replay, anonymize, anonymize_nicknames, initialize_worker
+from grpc_sc2reader_client import process_replay, anonymize, anonymize_nicknames, initialize_worker
 from multiprocessing import Pool
 import argparse
 import os
