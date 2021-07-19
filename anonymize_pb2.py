@@ -10,9 +10,6 @@ from google.protobuf import symbol_database as _symbol_database
 
 _sym_db = _symbol_database.Default()
 
-
-
-
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='anonymize.proto',
   package='',
@@ -21,9 +18,6 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   create_key=_descriptor._internal_create_key,
   serialized_pb=b'\n\x0f\x61nonymize.proto\" \n\x0cSendNickname\x12\x10\n\x08nickname\x18\x01 \x01(\t\"!\n\tReceiveID\x12\x14\n\x0c\x61nonymizedID\x18\x01 \x01(\t2@\n\x10\x41nonymizeService\x12,\n\x0fgetAnonymizedID\x12\r.SendNickname\x1a\n.ReceiveIDb\x06proto3'
 )
-
-
-
 
 _SENDNICKNAME = _descriptor.Descriptor(
   name='SendNickname',
@@ -105,8 +99,6 @@ ReceiveID = _reflection.GeneratedProtocolMessageType('ReceiveID', (_message.Mess
   # @@protoc_insertion_point(class_scope:ReceiveID)
   })
 _sym_db.RegisterMessage(ReceiveID)
-
-
 
 _ANONYMIZESERVICE = _descriptor.ServiceDescriptor(
   name='AnonymizeService',
