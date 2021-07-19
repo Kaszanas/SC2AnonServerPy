@@ -5,6 +5,7 @@ import os
 import logging
 from itertools import product
 
+from settings import LOGGING_FORMAT
 
 USE_MULTIPROCESSING = True
 
@@ -49,5 +50,5 @@ def start_processing(replay_directory:str, output_directory:str):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
     start_processing("./DEMOS/Input", "./DEMOS/Output/")
