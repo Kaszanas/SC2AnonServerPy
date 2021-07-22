@@ -20,14 +20,15 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         self.load_data()
 
 
-    def getAnonymizedID(self, request, context):
+    def getAnonymizedID(self, request, anonymization_function, context):
         logging.info(f"Received nickname = {request.nickname}")
 
         # TODO: use self.loaded data as the object to chech and hash the players
         logging.info("Checking if nickname is not in currently defined {nickname: ID} mapping.")
         if request.nickname not in self.loaded_data:
             logging.info("Nickname not within current mapping object.")
-            self.loaded_data[request.nickname] = hashlib.md5(request.nickname.encode()).hexdigest()
+            self.loaded_data[request.nickname] = anonymization_function(request.nickname)
+            # hashlib.md5(request.nickname.encode()).hexdigest()
         else:
             logging.info("Nickname is within current mapping. Reusing existing hash.")
 
