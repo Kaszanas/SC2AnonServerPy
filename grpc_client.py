@@ -1,4 +1,4 @@
-from grpc_sc2reader_client import process_replay, anonymize, anonymize_nicknames, initialize_worker
+from grpc_sc2reader_client_functions import process_replay, anonymize, anonymize_nicknames, initialize_worker
 from multiprocessing import Pool
 import argparse
 import os
@@ -6,8 +6,6 @@ import logging
 from itertools import product
 
 from settings import LOGGING_FORMAT
-
-USE_MULTIPROCESSING = True
 
 # Initiate multiprocessing spawning processes that are using load_replay
 # This must be done by popping a list so that processes don't have the same replay by accident.
@@ -39,11 +37,9 @@ def start_processing(args_replay_directory:str,
         with Pool(processes=args_agents, initializer=initialize_worker) as pool:
             # test_var = list(product(list_of_replays, [output_directory]))
             pool.imap_unordered(process_replay, processing_arguments, args_chunksize)
-
             pool.close()
             pool.join()
     else:
-
         initialize_worker()
         for arguments in processing_arguments:
             process_replay(arguments)
