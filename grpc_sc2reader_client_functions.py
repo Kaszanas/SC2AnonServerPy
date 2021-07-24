@@ -35,7 +35,7 @@ def anonymize_nicknames(replay, stub):
     logging.info("Entered anonymize nicknames")
 
     logging.info("Starting to iterate over players and anonymizing their nicknames")
-    for key, client in replay.client.items():
+    for _, client in replay.client.items():
 
         # Calling the server to see if the nicknames were already assigned with arbitrary anonymized ID:
         response = stub.getAnonymizedID(anonymize_pb2.SendNickname(nickname=client.name))
@@ -53,7 +53,7 @@ def anonymize(replay, stub):
 
     # Anonymizing known sensitive variables by hand (there should always be 2 players in 1v1 ranked play)
     logging.info("Starting to iterate over players, anonymizing toon_handle and toon_id")
-    for key, client in replay.client.items():
+    for _, client in replay.client.items():
         client.toon_handle = 'redacted'
         client.toon_id = 'redacted'
     logging.info("Finished anonymizing toon_handle and toon_id")
@@ -77,25 +77,25 @@ def anonymize_chat(replay):
 
 def process_replay(arguments:tuple):
 
-    logging.info(f"Entered process_replay got arguments = {arguments}")
+    logging.info(f"Entered process_replay() got arguments = {arguments}")
 
     try:
-
-        # Unpacking tuple of supplied arguments (this is required with multiprocessing)
+        # Unpacking tuple of supplied arguments (this is required with multiprocessing):
         replay_file, output_dir = arguments
 
-        # Opening communication with gRPC
+        # Opening communication with gRPC:
         logging.info("Initializing gRPC stub.")
         stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
 
-        # Loading the file
+        # Loading the file:
         logging.info("Loading replay.")
         replay = sc2reader.load_replay(replay_file, load_level=4)
 
-        # Getting filename of the provided replay
+        # Getting filename of the provided replay:
         logging.info("Checking replay filename.")
         name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
 
+        # Anonymizing the file:
         logging.info("Calling anonymize().")
         replay = anonymize(replay, stub)
         logging.info("Exited anonymize().")
