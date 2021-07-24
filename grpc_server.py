@@ -5,8 +5,6 @@ import anonymize_pb2_grpc
 import logging
 import time
 import pickle
-import hashlib
-import datetime
 
 from settings import LOGGING_FORMAT
 
@@ -16,13 +14,13 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         self.loaded_data = {}
         self.pickle_filepath = pickle_filepath
 
+        # Loading data from persisted anonymization mapping (pickle):
         self.load_data()
 
 
     def getAnonymizedID(self, request, context):
         logging.info(f"Received nickname = {request.nickname}")
 
-        # TODO: use self.loaded data as the object to chech and hash the players
         logging.info("Checking if nickname is not in currently defined {nickname: ID} mapping.")
         player_counter = 0
         if request.nickname not in self.loaded_data:
@@ -48,13 +46,11 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 
         try:
             with open(self.pickle_filepath, mode="rb") as anonymized_db:
-                # If there's already a dict there return it
+                # If there's already a dict within the file, return it
                 logging.info("Attempting to load supplied DB of anonymized players.")
                 self.loaded_data = pickle.load(anonymized_db)
-
                 logging.info("Loaded existing database of {nickname: ID} mappings.")
                 logging.info(f"Detected {len(self.loaded_data)} nicknames that were hashed.")
-
         except:
             logging.info("Did not detect any objects in .pickle for anonymizing nicknames.")
             self.loaded_data = {}
