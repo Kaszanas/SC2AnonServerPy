@@ -27,6 +27,8 @@ def start_processing(args_replay_directory:str,
                     args_anonymize_toon:bool,
                     args_anonymize_chat:bool):
 
+    logging.info("Entered start_processing()")
+
     # Getting a list of replay filepaths by using a helper function:
     list_of_replays = get_replays(args_replay_directory)
     logging.info(f"Got list_of_replays= {len(list_of_replays)}")
@@ -38,15 +40,16 @@ def start_processing(args_replay_directory:str,
     processing_arguments_iterator = iter(processing_arguments)
 
     if args_multiprocessing:
+        logging.info("Detected args_multiprocessing = True")
         # Defining available pool of processes for replay processing:
         with Pool(processes=args_agents, initializer=initialize_worker) as pool:
-            # test_var = list(product(list_of_replays, [output_directory]))
             pool.imap_unordered(process_replay,
                                 processing_arguments_iterator,
                                 args_chunksize)
             pool.close()
             pool.join()
     else:
+        logging.info("Detected args_multiprocessing = False")
         initialize_worker()
         for replay_file in list_of_replays:
             process_replay(replay_file=replay_file,
@@ -68,7 +71,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Setting up logging:
     logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
+
+    # Starting the client:
     start_processing(args_replay_directory=args.input_dir,
                     args_output_directory=args.output_dir,
                     args_agents=args.agents,
