@@ -77,7 +77,7 @@ def process_replay(arguments:tuple):
     logging.info(f"Entered process_replay() got arguments = {arguments}")
 
     try:
-        # Unpacking tuple of supplied arguments (this is required with multiprocessing):
+        # Ungking tuple of supplied arguments (this is required with multiprocessing):
         replay_file, output_dir = arguments
 
         # Opening communication with gRPC:
