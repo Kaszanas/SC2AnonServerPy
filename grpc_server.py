@@ -56,10 +56,9 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
             self.loaded_data = {}
 
 
-
     def save_data(self):
         """
-        Used before server shutdown to write all of the {"nickname": ID} mappings to a pickle file.
+        Used before server shutdown to write all of the {"nickname": "ID"} mappings to a pickle file.
         """
 
         logging.info("Entered save_data()")
