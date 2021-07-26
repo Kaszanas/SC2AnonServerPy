@@ -25,7 +25,7 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         player_counter = 0
         if request.nickname not in self.loaded_data:
             logging.info("Nickname not within current mapping object.")
-            self.loaded_data[request.nickname] = player_counter
+            self.loaded_data[request.nickname] = str(player_counter)
             player_counter += 1
         else:
             logging.info("Nickname is within current mapping. Reusing existing anonymized ID.")

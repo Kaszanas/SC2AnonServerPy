@@ -57,8 +57,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
-    start_processing(replay_directory=args.input_dir,
-                    output_directory=args.output_dir,
+    start_processing(args_replay_directory=args.input_dir,
+                    args_output_directory=args.output_dir,
                     args_agents=args.agents,
                     args_chunksize=args.chunksize,
                     args_multiprocessing=args.use_multiprocessing)
