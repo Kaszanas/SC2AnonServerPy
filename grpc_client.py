@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="StarCraft II replay processing tool that uses multiprocessing.")
     parser.add_argument("--input_dir", type=str, default="./DEMOS/Input", help="Provide the path to the input directory that contains .SC2Replay files.")
-    parser.add_argument("--output_dir", type=str, default="./DEMOS/Output", help="Provide the path to the output directory that will contain .pickle files.")
+    parser.add_argument("--output_dir", type=str, default="./DEMOS/Output/", help="Provide the path to the output directory that will contain .pickle files.")
     parser.add_argument("--agents", type=int, default=44, help="Provide how much agents will be available in the pool for execution.")
     parser.add_argument("--chunksize", type=int, default=1000, help="Provide how much replays are to be processed at once.")
     parser.add_argument("--use_multiprocessing", type=bool, default=True, help="Set this flag to true if You would like to use multiprocessing.")
