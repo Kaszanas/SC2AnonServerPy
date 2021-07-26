@@ -10,11 +10,37 @@ This project is used for weak anonymization of StarCraft II replays for research
 In order to begin processing please install ```requirements.txt``` and follow these steps:
 
 1. Place replays in ```./DEMOS/Input```
-2. Run ```python grpc_server.py```, which is responsible for anonymization process.
-3. Run ```python grpc_client.py```, which parses 
+2. Run ```python grpc_server.py```, which is responsible for persistent anonymization process.
+3. Run ```python grpc_client.py``` with command line arguments which will start up a sample replay processing usage below:
+
+```
+usage: grpc_client.py [-h] [--input_dir INPUT_DIR] [--output_dir OUTPUT_DIR]
+                      [--agents AGENTS] [--chunksize CHUNKSIZE]
+                      [--use_multiprocessing USE_MULTIPROCESSING]
+
+StarCraft II replay processing tool that uses multiprocessing.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input_dir INPUT_DIR
+                        Provide the path to the input directory that contains
+                        .SC2Replay files.
+  --output_dir OUTPUT_DIR
+                        Provide the path to the output directory that will
+                        contain .pickle files.
+  --agents AGENTS       Provide how much agents will be available in the pool
+                        for execution.
+  --chunksize CHUNKSIZE
+                        Provide how much replays are to be processed at once.
+  --use_multiprocessing USE_MULTIPROCESSING
+                        Set this flag to true if You would like to use
+                        multiprocessing.
+```
+
 
 ## Notes
 
 If You would like to implement a custom anonymization function please see the ```Listener``` class in ```grpc_server.py```.
+For the sake of logging and comments when "nickname" is mentioned it means any string that is meant to be anonymized and is sent to the gRPC server for that matter.
 
 Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation and uses https://github.com/ggtracker/sc2reader to perform processing.
