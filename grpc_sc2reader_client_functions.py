@@ -8,13 +8,10 @@ import anonymize_pb2_grpc
 
 # Replay processing imports:
 import sc2reader
-from PACAnalyzer.pacanalyzer import PACAnalyzer
 import pickle
 
 # Own imports:
 from settings import LOGGING_FORMAT
-
-sc2reader.engine.register_plugin(PACAnalyzer())
 
 CONNECTION = None
 
