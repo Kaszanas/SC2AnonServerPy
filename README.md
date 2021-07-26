@@ -62,4 +62,17 @@ Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation an
 
 ## Cite Us!
 
-Citation required!
+```
+@software{Bialecki2021,
+  author       = {Białecki, Andrzej and
+                  Białecki, Piotr},
+  title        = {{Kaszanas/SC2AnonServerPy: 1.0.0 SC2AnonServerPy 
+                   Release}},
+  month        = jul,
+  year         = 2021,
+  publisher    = {Zenodo},
+  version      = {1.0.0},
+  doi          = {10.5281/zenodo.5138314},
+  url          = {https://doi.org/10.5281/zenodo.5138314}
+}
+```
