@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138314.svg)](https://doi.org/10.5281/zenodo.5138314)
+
 # SC2AnonServerPy
 
 This project is used for weak anonymization of StarCraft II replays for research. Depending on further parsing and extraction implementations this project can assist with replacing toon identifiers (unique) or nicknames (not unique) with a week anonymized ID or a customized function.
