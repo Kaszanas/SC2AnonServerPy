@@ -8,8 +8,8 @@ This project is used for weak anonymization of StarCraft II replays for research
 - ```grpc_client.py``` - Client with multiprocessing of replays using gRPC server for persistent anonymization.
 
 1. Install Python 3.7.7
-2. OPTIONAL: Create a virtual environment by running the following command (replace ```<path_to_venv>``` with a path) ```python -m venv <path_to_venv>```.
-3. OPTIONAL: Activate the environment which You created.
+2. **OPTIONAL**: Create a virtual environment by running the following command (replace ```<path_to_venv>``` with a path) ```python -m venv <path_to_venv>```.
+3. **OPTIONAL**: Activate the environment which You created.
 4. Install ```requirements.txt``` by performing the following command ```pip install -r requirements.t``` In order to begin processing please install ```requirements.txt``` and follow these steps:
 
 5. Place replays in ```./DEMOS/Input``` which is a default path for the replay input.
