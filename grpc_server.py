@@ -23,10 +23,14 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 
         logging.info("Checking if nickname is not in currently defined {nickname: ID} mapping.")
         player_counter = 0
+
+        if "player_counter" not in self.loaded_data:
+            self.loaded_data["player_counter"] = 0
+
         if request.nickname not in self.loaded_data:
             logging.info("Nickname not within current mapping object.")
-            self.loaded_data[request.nickname] = player_counter
-            player_counter += 1
+            self.loaded_data[request.nickname] = self.loaded_data["player_counter"]
+            self.loaded_data["player_counter"] = self.loaded_data["player_counter"] + 1
         else:
             logging.info("Nickname is within current mapping. Reusing existing anonymized ID.")
 
@@ -34,7 +38,7 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 
         # Add the nickname as the key and check for highest current value of generated ID and add new key/value pair with highest_id += 1
         logging.info(f"Mapped nickname = {request.nickname} to ID = {anonymized_player}")
-        return anonymize_pb2.ReceiveID(anonymizedID=anonymized_player)
+        return anonymize_pb2.ReceiveID(anonymizedID=str(anonymized_player))
 
 
     def load_data(self):
