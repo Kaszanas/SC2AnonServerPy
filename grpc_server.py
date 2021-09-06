@@ -21,20 +21,18 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
     def getAnonymizedID(self, request, context):
         logging.info(f"Received nickname = {request.nickname}")
 
-        logging.info("Checking if nickname is not in currently defined {nickname: ID} mapping.")
         player_counter = 0
+
         if request.nickname not in self.loaded_data:
             logging.info("Nickname not within current mapping object.")
-            self.loaded_data[request.nickname] = str(player_counter)
-            player_counter += 1
-        else:
-            logging.info("Nickname is within current mapping. Reusing existing anonymized ID.")
+            self.loaded_data[request.nickname] = self.loaded_data["player_counter"]
+            self.loaded_data["player_counter"] = self.loaded_data["player_counter"] + 1
 
         anonymized_player = self.loaded_data[request.nickname]
 
         # Add the nickname as the key and check for highest current value of generated ID and add new key/value pair with highest_id += 1
         logging.info(f"Mapped nickname = {request.nickname} to ID = {anonymized_player}")
-        return anonymize_pb2.ReceiveID(anonymizedID=anonymized_player)
+        return anonymize_pb2.ReceiveID(anonymizedID=str(anonymized_player))
 
 
     def load_data(self):
@@ -53,7 +51,7 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
                 logging.info(f"Detected {len(self.loaded_data)} nicknames that were hashed.")
         except:
             logging.info("Did not detect any objects in .pickle for anonymizing nicknames.")
-            self.loaded_data = {}
+            self.loaded_data = {"player_counter": 0}
 
 
     def save_data(self):
@@ -102,13 +100,13 @@ def serve():
         while True:
             logging.info("Server listening")
             time.sleep(10)
-
     except KeyboardInterrupt:
         logging.info("Detected KeyboardInterrupt, Stopping server.")
-
+    finally:
         logging.info("Calling .save_data() on Listener().")
         my_listener.save_data()
         server.stop(grace=10)
+
 
 
 if __name__ == "__main__":
