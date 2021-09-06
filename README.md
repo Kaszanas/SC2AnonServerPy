@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138314.svg)](https://doi.org/10.5281/zenodo.5138314)
+
 # SC2AnonServerPy
 
 This project is used for weak anonymization of StarCraft II replays for research. Depending on further parsing and extraction implementations this project can assist with replacing toon identifiers (unique) or nicknames (not unique) with a week anonymized ID or a customized function.
@@ -20,6 +22,8 @@ This project is used for weak anonymization of StarCraft II replays for research
 usage: grpc_client.py [-h] [--input_dir INPUT_DIR] [--output_dir OUTPUT_DIR]
                       [--agents AGENTS] [--chunksize CHUNKSIZE]
                       [--use_multiprocessing USE_MULTIPROCESSING]
+                      [--anonymize_toon ANONYMIZE_TOON]
+                      [--anonymize_chat ANONYMIZE_CHAT]
 
 StarCraft II replay processing tool that uses multiprocessing.
 
@@ -38,6 +42,12 @@ optional arguments:
   --use_multiprocessing USE_MULTIPROCESSING
                         Set this flag to true if You would like to use
                         multiprocessing.
+  --anonymize_toon ANONYMIZE_TOON
+                        Set this flag to true if You would like to perform
+                        toon/nickname anonymization.
+  --anonymize_chat ANONYMIZE_CHAT
+                        Set this flag to true if You would like to perform
+                        chat anonymization.
 ```
 
 8. The resulting processed files will be placed in ```./DEMOS/Output``` by default.
@@ -52,4 +62,17 @@ Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation an
 
 ## Cite Us!
 
-Citation required!
+```
+@software{Bialecki2021,
+  author       = {Białecki, Andrzej and
+                  Białecki, Piotr},
+  title        = {{Kaszanas/SC2AnonServerPy: 1.0.0 SC2AnonServerPy 
+                   Release}},
+  month        = jul,
+  year         = 2021,
+  publisher    = {Zenodo},
+  version      = {1.0.0},
+  doi          = {10.5281/zenodo.5138314},
+  url          = {https://doi.org/10.5281/zenodo.5138314}
+}
+```

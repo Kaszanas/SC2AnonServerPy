@@ -18,7 +18,6 @@ logging.info(base_build)
 
 protocol = versions.build(base_build)
 
-
 contents = archive.read_file('replay.game.events')
 game_events = protocol.decode_replay_game_events(contents)
 

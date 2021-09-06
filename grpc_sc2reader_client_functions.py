@@ -8,13 +8,10 @@ import anonymize_pb2_grpc
 
 # Replay processing imports:
 import sc2reader
-from PACAnalyzer.pacanalyzer import PACAnalyzer
 import pickle
 
 # Own imports:
 from settings import LOGGING_FORMAT
-
-sc2reader.engine.register_plugin(PACAnalyzer())
 
 CONNECTION = None
 
@@ -30,65 +27,71 @@ def initialize_worker():
     logging.info("Initialized Worker")
 
 
-def anonymize_nicknames(replay, stub):
+def anonymize_toon_fn(replay, stub):
 
-    logging.info("Entered anonymize nicknames")
+    logging.info("Entered anonymize_toon()")
 
-    logging.info("Starting to iterate over players and anonymizing their nicknames")
+    logging.info("Starting to iterate over players and anonymizing their toons")
     for _, client in replay.client.items():
-
         # Calling the server to see if the nicknames were already assigned with arbitrary anonymized ID:
-        response = stub.getAnonymizedID(anonymize_pb2.SendNickname(nickname=client.name))
-
+        response = stub.getAnonymizedID(anonymize_pb2.SendNickname(nickname=client.toon_handle))
         # Overwriting  existing values:
-        client.name = response.anonymizedID
-    logging.info("Finished anonymizing nicknames")
+        client.toon_handle = response.anonymizedID
 
+    logging.info("Finished anonymizing client.toon_handle")
     return replay
 
 
-def anonymize(replay, stub):
+def anonymize(replay, stub, anonymize_toon_bool:bool, anonymize_chat_bool:bool):
 
-    logging.info("Entered anonymize")
+    logging.info("Entered anonymize()")
 
-    # Anonymizing known sensitive variables by hand (there should always be 2 players in 1v1 ranked play)
-    logging.info("Starting to iterate over players, anonymizing toon_handle and toon_id")
-    for _, client in replay.client.items():
-        client.toon_handle = 'redacted'
-        client.toon_id = 'redacted'
-    logging.info("Finished anonymizing toon_handle and toon_id")
+    # Anonymizing known sensitive variables by hand (there should always be 2 players in 1v1 ranked play):
+    if anonymize_toon_bool:
+        logging.info("Starting to iterate over players, anonymizing nickname and toon_id")
+        for _, client in replay.client.items():
+            # Anonymizing nickname:
+            client.name = "redacted"
+            # Anonymizing toon_id:
+            client.toon_id = "redacted"
 
-    # Calling anonymize nicknames to check if they were processed before:
-    logging.info("Calling anonymize_nicknames()")
-    replay = anonymize_nicknames(replay, stub)
-    logging.info("Exited anonymize_nicknames, returning replay object")
+        # Calling anonymize nicknames to check if they were processed before:
+        logging.info("Calling anonymize_nicknames()")
+        replay = anonymize_toon_fn(replay, stub)
+        logging.info("Exited anonymize_nicknames, returning replay object")
 
-    replay = anonymize_chat(replay)
+    if anonymize_chat_bool:
+        replay = anonymize_chat(replay)
 
     return replay
 
 def anonymize_chat(replay):
 
-    events = [None for not_chat in replay.messages if not_chat.name == "ChatEvent"]
-    replay.events = events
+    for message_object in replay.messages:
+        if message_object.name == "ChatEvent":
+            message_object.text = "redacted"
 
     return replay
 
 
 def process_replay(arguments:tuple):
 
-    logging.info(f"Entered process_replay() got arguments = {arguments}")
+    logging.info("Entered process_replay()")
+
+    replay_file, output_dir, anonymize_toon, anonymize_chat = arguments
+
+    logging.info("Unpacked arguments")
 
     try:
-        # Unpacking tuple of supplied arguments (this is required with multiprocessing):
-        replay_file, output_dir = arguments
 
         # Opening communication with gRPC:
-        logging.info("Initializing gRPC stub.")
-        stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
+        stub = None
+        if anonymize_toon:
+            logging.info("Detected anonymize_toon = True, Initializing gRPC stub")
+            stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
 
         # Loading the file:
-        logging.info("Loading replay.")
+        logging.info("Loading replay")
         replay = sc2reader.load_replay(replay_file, load_level=4)
 
         # Getting filename of the provided replay:
@@ -97,7 +100,10 @@ def process_replay(arguments:tuple):
 
         # Anonymizing the file:
         logging.info("Calling anonymize().")
-        replay = anonymize(replay, stub)
+        replay = anonymize(replay=replay,
+                            stub=stub,
+                            anonymize_toon_bool=anonymize_toon,
+                            anonymize_chat_bool=anonymize_chat)
         logging.info("Exited anonymize().")
 
 
