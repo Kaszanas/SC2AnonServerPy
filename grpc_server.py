@@ -21,8 +21,6 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
     def getAnonymizedID(self, request, context):
         logging.info(f"Received nickname = {request.nickname}")
 
-        player_counter = 0
-
         if request.nickname not in self.loaded_data:
             logging.info("Nickname not within current mapping object.")
             self.loaded_data[request.nickname] = self.loaded_data["player_counter"]
