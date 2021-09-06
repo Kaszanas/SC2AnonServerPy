@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138314.svg)](https://doi.org/10.5281/zenodo.5138314)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5138313.svg)](https://doi.org/10.5281/zenodo.5138313)
 
 # SC2AnonServerPy
 
@@ -72,7 +72,7 @@ Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation an
   year         = 2021,
   publisher    = {Zenodo},
   version      = {1.0.0},
-  doi          = {10.5281/zenodo.5138314},
-  url          = {https://doi.org/10.5281/zenodo.5138314}
+  doi          = {10.5281/zenodo.5138313},
+  url          = {https://doi.org/10.5281/zenodo.5138313}
 }
 ```
