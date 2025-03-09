@@ -5,8 +5,18 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Kaszanas", email = "andrzej.bialecki94@gmail.com" }]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "grpcio-tools>=1.70.0",
+    "grpcio>=1.70.0",
+    "sc2reader>=1.8.0",
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.1.0",
+    "ruff>=0.9.10",
+]
