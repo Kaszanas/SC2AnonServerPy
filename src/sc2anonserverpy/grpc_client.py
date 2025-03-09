@@ -3,7 +3,7 @@ import logging
 import os
 from multiprocessing import Pool
 
-from sc2anonserverpy.grpc_sc2reader_client_functions import (
+from sc2anonserverpy.grpc_functions.grpc_sc2reader_client_functions import (
     initialize_worker,
     process_replay,
 )
