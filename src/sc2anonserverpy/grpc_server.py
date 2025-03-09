@@ -1,22 +1,22 @@
-from concurrent import futures
-import grpc
-import anonymize_pb2
-import anonymize_pb2_grpc
 import logging
-import time
 import pickle
+import time
+from concurrent import futures
 
-from settings import LOGGING_FORMAT
+import grpc
+
+import sc2anonserverpy.grpc_functions.anonymize_pb2 as anonymize_pb2
+import sc2anonserverpy.grpc_functions.anonymize_pb2_grpc as anonymize_pb2_grpc
+from sc2anonserverpy.settings import LOGGING_FORMAT
+
 
 class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
-
-    def __init__(self, pickle_filepath:str):
+    def __init__(self, pickle_filepath: str):
         self.loaded_data = {}
         self.pickle_filepath = pickle_filepath
 
         # Loading data from persisted anonymization mapping (pickle):
         self.load_data()
-
 
     def getAnonymizedID(self, request, context):
         logging.info(f"Received nickname = {request.nickname}")
@@ -29,9 +29,10 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         anonymized_player = self.loaded_data[request.nickname]
 
         # Add the nickname as the key and check for highest current value of generated ID and add new key/value pair with highest_id += 1
-        logging.info(f"Mapped nickname = {request.nickname} to ID = {anonymized_player}")
+        logging.info(
+            f"Mapped nickname = {request.nickname} to ID = {anonymized_player}"
+        )
         return anonymize_pb2.ReceiveID(anonymizedID=str(anonymized_player))
-
 
     def load_data(self):
         """
@@ -46,11 +47,14 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
                 logging.info("Attempting to load supplied DB of anonymized players.")
                 self.loaded_data = pickle.load(anonymized_db)
                 logging.info("Loaded existing database of {nickname: ID} mappings.")
-                logging.info(f"Detected {len(self.loaded_data)} nicknames that were hashed.")
+                logging.info(
+                    f"Detected {len(self.loaded_data)} nicknames that were hashed."
+                )
         except:
-            logging.info("Did not detect any objects in .pickle for anonymizing nicknames.")
+            logging.info(
+                "Did not detect any objects in .pickle for anonymizing nicknames."
+            )
             self.loaded_data = {"player_counter": 0}
-
 
     def save_data(self):
         """
@@ -62,8 +66,12 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         with open(self.pickle_filepath, mode="wb") as anonymized_db:
             logging.info(f"Opened {self.pickle_filepath} as anonymized_db.")
 
-            logging.info("Attempting to dump all of recently mapped nicknames into a pickle file and save it.")
-            logging.info(f"Currently detected {len(self.loaded_data)} hashed nicknames.")
+            logging.info(
+                "Attempting to dump all of recently mapped nicknames into a pickle file and save it."
+            )
+            logging.info(
+                f"Currently detected {len(self.loaded_data)} hashed nicknames."
+            )
 
             pickle.dump(self.loaded_data, anonymized_db)
 
@@ -71,7 +79,6 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 
 
 def serve():
-
     logging.info("Attempting to initialize grpc server.")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
 
@@ -80,7 +87,9 @@ def serve():
     my_listener = Listener("./persist_anonymized_players.pickle")
 
     # Loading pickle data which will be contained within class object:
-    logging.info("Calling .load_data() on initialized Listener to check if file used for hashing exists.")
+    logging.info(
+        "Calling .load_data() on initialized Listener to check if file used for hashing exists."
+    )
     my_listener.load_data()
 
     # Starting server:
@@ -104,7 +113,6 @@ def serve():
         logging.info("Calling .save_data() on Listener().")
         my_listener.save_data()
         server.stop(grace=10)
-
 
 
 if __name__ == "__main__":

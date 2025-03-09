@@ -1,7 +1,7 @@
 import sc2reader
 import pickle
 
-infile_0 = open('./DEMOS/Output/11506437_1566325283_230842.pickle','rb')
+infile_0 = open("./DEMOS/Output/11506437_1566325283_230842.pickle", "rb")
 messages_0 = pickle.load(infile_0)
 print(messages_0)
 
@@ -17,10 +17,10 @@ for event in messages_0.events:
 
 # def format_replay(replay):
 #     pass
-    # output = replay.name
-    # for team in replay.teams:
-    #     for player in team.players:
-    #         if player.is_human:
-                # output += str(player.PACStats.ppm)
+# output = replay.name
+# for team in replay.teams:
+#     for player in team.players:
+#         if player.is_human:
+# output += str(player.PACStats.ppm)
 
-    # return output
+# return output
