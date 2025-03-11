@@ -1,18 +1,16 @@
 import logging
-from pathlib import Path
 import pickle
 import time
 from concurrent import futures
+from pathlib import Path
 
 import grpc
+import typer
+from typing_extensions import Annotated
 
 import sc2anonserverpy.grpc_functions.anonymize_pb2 as anonymize_pb2
 import sc2anonserverpy.grpc_functions.anonymize_pb2_grpc as anonymize_pb2_grpc
 from sc2anonserverpy.settings import LOGGING_FORMAT
-
-
-import typer
-from typing_extensions import Annotated
 
 
 class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
