@@ -66,7 +66,7 @@ Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation an
 @software{Bialecki2021,
   author       = {Białecki, Andrzej and
                   Białecki, Piotr},
-  title        = {{Kaszanas/SC2AnonServerPy: 1.0.0 SC2AnonServerPy 
+  title        = {{Kaszanas/SC2AnonServerPy: 1.0.0 SC2AnonServerPy
                    Release}},
   month        = jul,
   year         = 2021,

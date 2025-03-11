@@ -38,6 +38,10 @@ docker_build: ## Builds the image containing all of the tools.
 		--tag=$(DOCKER_TAG)
 
 
+.PHONY: docker_run_it
+docker_run_it: ## Run the container in interactive mode
+	docker run -it --rm $(DOCKER_TAG)
+
 
 .PHONY: help
 help: ## Show available make targets

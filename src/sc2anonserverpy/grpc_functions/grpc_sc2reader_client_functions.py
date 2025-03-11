@@ -114,5 +114,5 @@ def process_replay(arguments: tuple):
             pickle.dump(replay, f)
             logging.info("Created .pickle file with the result of processing.")
 
-    except:
+    except:  # noqa E722
         logging.exception("Exception detected")
