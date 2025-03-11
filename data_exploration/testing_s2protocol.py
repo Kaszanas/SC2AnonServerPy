@@ -1,4 +1,3 @@
-import s2protocol
 import logging
 import mpyq
 from s2protocol import versions

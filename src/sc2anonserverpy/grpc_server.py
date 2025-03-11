@@ -50,7 +50,7 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
                 logging.info(
                     f"Detected {len(self.loaded_data)} nicknames that were hashed."
                 )
-        except:
+        except:  # noqa: E722
             logging.info(
                 "Did not detect any objects in .pickle for anonymizing nicknames."
             )

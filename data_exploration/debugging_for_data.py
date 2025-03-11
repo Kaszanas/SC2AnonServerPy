@@ -1,4 +1,3 @@
-import sc2reader
 import pickle
 
 infile_0 = open("./DEMOS/Output/11506437_1566325283_230842.pickle", "rb")
