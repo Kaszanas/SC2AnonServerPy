@@ -21,6 +21,10 @@ jobs:
       - name: Check-out repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
-      - name: Build Dev Docker Image
+      - name: Build Docker Image
         run: |
           make docker_build
+
+      - name: Build Development Docker Image and Run Pre-commit
+        run: |
+          make docker_pre_commit_action
