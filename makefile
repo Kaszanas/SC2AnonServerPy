@@ -17,6 +17,7 @@ DEVCONTAINER = kaszanas/sc2anonserverpy-devcontainer
 .PHONY: run
 run_server: ## Run the server
 	docker run -it --rm \
+		-v ".\processing:/app/processing"
 		$(DOCKER_TAG) \
 		python3 grpc_server.py
 
