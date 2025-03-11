@@ -1,5 +1,5 @@
-import os
 import logging
+from pathlib import Path
 
 # gRPC imports:
 import grpc
@@ -15,6 +15,62 @@ import pickle
 from sc2anonserverpy.settings import LOGGING_FORMAT
 
 CONNECTION = None
+
+
+class ProcessReplayArguments:
+    def __init__(
+        self,
+        replay_filepath: Path,
+        output_dir: Path,
+        anonymize_toon: bool,
+        anonymize_chat: bool,
+    ):
+        self.replay_filepath = replay_filepath.resolve()
+        self.output_dir = output_dir.resolve()
+        self.anonymize_toon = anonymize_toon
+        self.anonymize_chat = anonymize_chat
+
+
+def process_replay(arguments: ProcessReplayArguments):
+    logging.info("Entered process_replay()")
+
+    logging.info("Unpacked arguments")
+
+    try:
+        # Opening communication with gRPC:
+        stub = None
+        if arguments.anonymize_toon:
+            logging.info("Detected anonymize_toon = True, Initializing gRPC stub")
+            stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
+
+        # Loading the file:
+        logging.info("Loading replay")
+        loaded_replay = sc2reader.load_replay(
+            str(arguments.replay_filepath), load_level=4
+        )
+
+        # Getting filename of the provided replay:
+        logging.info("Checking replay filename.")
+        name_of_replay = arguments.replay_filepath.stem
+
+        # Anonymizing the file:
+        logging.info("Calling anonymize().")
+        loaded_replay = anonymize_fn(
+            replay=loaded_replay,
+            stub=stub,
+            anonymize_toon_bool=arguments.anonymize_toon,
+            anonymize_chat_bool=arguments.anonymize_chat,
+        )
+        logging.info("Exited anonymize().")
+
+        replay_output_filepath = arguments.output_dir / name_of_replay / ".pickle"
+        with replay_output_filepath.open(mode="wb") as f:
+            logging.info("Attempting to create .pickle file.")
+            pickle.dump(loaded_replay, f)
+            logging.info("Created .pickle file with the result of processing.")
+
+    except:  # noqa E722
+        logging.exception("Exception detected")
 
 
 def initialize_worker():
@@ -44,7 +100,7 @@ def anonymize_toon_fn(replay, stub):
     return replay
 
 
-def anonymize(replay, stub, anonymize_toon_bool: bool, anonymize_chat_bool: bool):
+def anonymize_fn(replay, stub, anonymize_toon_bool: bool, anonymize_chat_bool: bool):
     logging.info("Entered anonymize()")
 
     # Anonymizing known sensitive variables by hand (there should always be 2 players in 1v1 ranked play):
@@ -64,55 +120,14 @@ def anonymize(replay, stub, anonymize_toon_bool: bool, anonymize_chat_bool: bool
         logging.info("Exited anonymize_nicknames, returning replay object")
 
     if anonymize_chat_bool:
-        replay = anonymize_chat(replay)
+        replay = anonymize_chat_fn(replay)
 
     return replay
 
 
-def anonymize_chat(replay):
+def anonymize_chat_fn(replay):
     for message_object in replay.messages:
         if message_object.name == "ChatEvent":
             message_object.text = "redacted"
 
     return replay
-
-
-def process_replay(arguments: tuple):
-    logging.info("Entered process_replay()")
-
-    replay_file, output_dir, anonymize_toon, anonymize_chat = arguments
-
-    logging.info("Unpacked arguments")
-
-    try:
-        # Opening communication with gRPC:
-        stub = None
-        if anonymize_toon:
-            logging.info("Detected anonymize_toon = True, Initializing gRPC stub")
-            stub = anonymize_pb2_grpc.AnonymizeServiceStub(CONNECTION)
-
-        # Loading the file:
-        logging.info("Loading replay")
-        replay = sc2reader.load_replay(replay_file, load_level=4)
-
-        # Getting filename of the provided replay:
-        logging.info("Checking replay filename.")
-        name_of_replay = os.path.splitext(os.path.basename(replay.filename))[0]
-
-        # Anonymizing the file:
-        logging.info("Calling anonymize().")
-        replay = anonymize(
-            replay=replay,
-            stub=stub,
-            anonymize_toon_bool=anonymize_toon,
-            anonymize_chat_bool=anonymize_chat,
-        )
-        logging.info("Exited anonymize().")
-
-        with open(f"{output_dir + name_of_replay}.pickle", "wb") as f:
-            logging.info("Attempting to create .pickle file.")
-            pickle.dump(replay, f)
-            logging.info("Created .pickle file with the result of processing.")
-
-    except:  # noqa E722
-        logging.exception("Exception detected")
