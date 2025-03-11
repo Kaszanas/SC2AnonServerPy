@@ -6,7 +6,7 @@ PYTHON_VERSION = 3.13
 # Docker variables:
 DOCKER_DIR = ./docker
 DOCKER_FILE = $(DOCKER_DIR)/Dockerfile
-DOCKER_FILE_DEVCONTAINER = $(DOCKER_DIR)/Dockerfile
+DOCKER_FILE_DEVCONTAINER = $(DOCKER_DIR)/Dockerfile.dev
 
 DOCKER_TAG = kaszanas/sc2anonserverpy
 DEVCONTAINER = kaszanas/sc2anonserverpy-devcontainer
