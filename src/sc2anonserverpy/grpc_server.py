@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 import pickle
 import time
 from concurrent import futures
@@ -10,8 +11,12 @@ import sc2anonserverpy.grpc_functions.anonymize_pb2_grpc as anonymize_pb2_grpc
 from sc2anonserverpy.settings import LOGGING_FORMAT
 
 
+import typer
+from typing_extensions import Annotated
+
+
 class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
-    def __init__(self, pickle_filepath: str):
+    def __init__(self, pickle_filepath: Path):
         self.loaded_data = {}
         self.pickle_filepath = pickle_filepath
 
@@ -42,7 +47,7 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
         """
 
         try:
-            with open(self.pickle_filepath, mode="rb") as anonymized_db:
+            with self.pickle_filepath.open(mode="rb") as anonymized_db:
                 # If there's already a dict within the file, return it
                 logging.info("Attempting to load supplied DB of anonymized players.")
                 self.loaded_data = pickle.load(anonymized_db)
@@ -63,8 +68,8 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
 
         logging.info("Entered save_data()")
 
-        with open(self.pickle_filepath, mode="wb") as anonymized_db:
-            logging.info(f"Opened {self.pickle_filepath} as anonymized_db.")
+        with self.pickle_filepath.open(mode="wb") as anonymized_db:
+            logging.info(f"Opened {str(self.pickle_filepath)} as anonymized_db.")
 
             logging.info(
                 "Attempting to dump all of recently mapped nicknames into a pickle file and save it."
@@ -78,13 +83,33 @@ class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
             logging.info("Successfully performed pickle.dump().")
 
 
-def serve():
+def main(
+    anonymized_db_path: Annotated[
+        Path,
+        typer.Option(
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            writable=True,
+            readable=True,
+            resolve_path=True,
+            help="Path to the .pickle file that will be used to store anonymized nicknames.",
+        ),
+    ],
+):
+    logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
+    logging.info("Set up logging config, attempting to call serve().")
+
+    serve(anonymized_db_path=anonymized_db_path)
+
+
+def serve(anonymized_db_path: Path):
     logging.info("Attempting to initialize grpc server.")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
 
     # Initializing empty Listener:
     logging.info("Initializing Listener() class with a file to keep hashed nicknames.")
-    my_listener = Listener("./persist_anonymized_players.pickle")
+    my_listener = Listener(pickle_filepath=anonymized_db_path)
 
     # Loading pickle data which will be contained within class object:
     logging.info(
@@ -116,6 +141,4 @@ def serve():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
-    logging.info("Set up logging config, attempting to call serve().")
-    serve()
+    typer.run(main)
