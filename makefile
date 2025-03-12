@@ -16,23 +16,29 @@ DEVCONTAINER = kaszanas/sc2anonserverpy-devcontainer
 ############################
 .PHONY: run
 run_server: ## Run the server
-	docker run -it --rm \
-		-v ".\processing:/app/processing"
+	@echo "Running the gRPC anonymization server"
+	@echo "Using the Docker image: $(DOCKER_TAG)"
+	docker run --rm \
+		-v ".\processing:/app/processing" \
+		-p 9999:9999 \
 		$(DOCKER_TAG) \
 		python3 grpc_server.py \
-			--anonymized_db_path /app/processing/anonymized_players.pickle
+			--anonymized-db-path /app/processing/anonymized_players.pickle
 
 .PHONY: run_client
 run_client: ## Run the client without multiprocessing
-	docker run -it --rm \
-		-v ".\processing:/app/processing"
+	@echo "Running the gRPC anonymization client"
+	@echo "Using the Docker image: $(DOCKER_TAG)"
+	docker run --rm \
+		-v ".\processing:/app/processing" \
+		--network host \
 		$(DOCKER_TAG) \
 		python3 grpc_client.py \
-			--input_dir /app/processing/demos/input \
-			--output_dir /app/processing/demos/output \
+			--replay-directory /app/processing/demos/input \
+			--output-directory /app/processing/demos/output \
 			--agents 1 \
 			--chunksize 1 \
-			--use_multiprocessing False
+			--multiprocessing
 
 ############################
 #### Docker commands #######

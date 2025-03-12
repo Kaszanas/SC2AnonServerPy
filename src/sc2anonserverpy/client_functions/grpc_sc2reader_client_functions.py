@@ -63,7 +63,7 @@ def process_replay(arguments: ProcessReplayArguments):
         )
         logging.info("Exited anonymize().")
 
-        replay_output_filepath = arguments.output_dir / name_of_replay / ".pickle"
+        replay_output_filepath = arguments.output_dir / f"{name_of_replay}.pickle"
         with replay_output_filepath.open(mode="wb") as f:
             logging.info("Attempting to create .pickle file.")
             pickle.dump(loaded_replay, f)

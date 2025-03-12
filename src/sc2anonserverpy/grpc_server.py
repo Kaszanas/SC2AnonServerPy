@@ -91,7 +91,6 @@ def main(
     anonymized_db_path: Annotated[
         Path,
         typer.Option(
-            exists=True,
             file_okay=True,
             dir_okay=False,
             writable=True,
