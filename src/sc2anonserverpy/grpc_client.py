@@ -12,6 +12,12 @@ from sc2anonserverpy.grpc_functions.grpc_sc2reader_client_functions import (
 from sc2anonserverpy.settings import LOGGING_FORMAT
 
 
+# NOTE: For clean output of CLI arguments for README:
+# import typer.core
+
+# typer.core.rich = None
+
+
 # Initiate multiprocessing spawning processes that are using load_replay
 # This must be done by popping a list so that processes don't have the same replay by accident.
 def get_replays(replay_directory: Path):
@@ -42,38 +48,33 @@ def main(
     agents: Annotated[
         int,
         typer.Option(
-            default=1,
             help="Number of multiprocessing agents.",
         ),
-    ],
+    ] = 1,
     chunksize: Annotated[
         int,
         typer.Option(
-            default=1,
             help="Number of replays to process by each agent.",
         ),
-    ],
+    ] = 1,
     multiprocessing: Annotated[
         bool,
         typer.Option(
-            default=False,
             help="True if multiprocessing should be used.",
         ),
-    ],
+    ] = False,
     anonymize_toon: Annotated[
         bool,
         typer.Option(
-            default=True,
             help="True if the unique toon should be anonymized.",
         ),
-    ],
+    ] = True,
     anonymize_chat: Annotated[
         bool,
         typer.Option(
-            default=True,
             help="True if chat should be anonymized.",
         ),
-    ],
+    ] = True,
 ):
     # Setting up logging:
     logging.basicConfig(level=logging.DEBUG, format=LOGGING_FORMAT)
