@@ -19,7 +19,8 @@ run_server: ## Run the server
 	docker run -it --rm \
 		-v ".\processing:/app/processing"
 		$(DOCKER_TAG) \
-		python3 grpc_server.py
+		python3 grpc_server.py \
+			--anonymized_db_path /app/processing/anonymized_players.pickle
 
 .PHONY: run_client
 run_client: ## Run the client without multiprocessing

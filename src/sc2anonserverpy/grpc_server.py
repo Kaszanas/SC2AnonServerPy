@@ -13,6 +13,12 @@ import sc2anonserverpy.grpc_functions.anonymize_pb2_grpc as anonymize_pb2_grpc
 from sc2anonserverpy.settings import LOGGING_FORMAT
 
 
+# NOTE: For clean output of CLI arguments for README:
+# import typer.core
+
+# typer.core.rich = None
+
+
 class Listener(anonymize_pb2_grpc.AnonymizeServiceServicer):
     def __init__(self, pickle_filepath: Path):
         self.loaded_data = {}
