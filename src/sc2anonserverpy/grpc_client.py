@@ -5,7 +5,8 @@ from pathlib import Path
 import typer
 from typing_extensions import Annotated
 
-from sc2anonserverpy.grpc_functions.grpc_sc2reader_client_functions import (
+from sc2anonserverpy.client_functions.grpc_sc2reader_client_functions import (
+    ProcessReplayArguments,
     initialize_worker,
     process_replay,
 )
@@ -109,11 +110,11 @@ def start_processing(
     processing_arguments = []
     for replay_path in list_of_replays:
         processing_arguments.append(
-            (
-                replay_path,
-                output_directory,
-                anonymize_toon,
-                anonymize_chat,
+            ProcessReplayArguments(
+                replay_filepath=replay_path,
+                output_dir=output_directory,
+                anonymize_toon=anonymize_toon,
+                anonymize_chat=anonymize_chat,
             )
         )
 
