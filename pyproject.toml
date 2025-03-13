@@ -1,6 +1,6 @@
 [project]
 name = "sc2anonserverpy"
-version = "1.0.0"
+version = "1.0.1"
 description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Kaszanas", email = "andrzej.bialecki94@gmail.com" }]
@@ -11,6 +11,11 @@ dependencies = [
     "sc2reader>=1.8.0",
     "typer>=0.15.2",
 ]
+
+
+[tool.commitizen]
+version = "1.1.0"
+
 
 [build-system]
 requires = ["hatchling"]
