@@ -1,6 +1,6 @@
 [project]
 name = "sc2anonserverpy"
-version = "1.0.1"
+version = "1.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Kaszanas", email = "andrzej.bialecki94@gmail.com" }]
@@ -15,7 +15,9 @@ dependencies = [
 
 [tool.commitizen]
 version = "1.1.0"
-
+version_files = [
+    "pyproject.toml:version"
+]
 
 [build-system]
 requires = ["hatchling"]
