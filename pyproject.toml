@@ -1,12 +1,27 @@
 [project]
 name = "sc2anonserverpy"
-version = "1.0.0"
+version = "1.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Kaszanas", email = "andrzej.bialecki94@gmail.com" }]
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = [
+    "grpcio-tools>=1.71.0",
+    "grpcio>=1.71.0",
+    "sc2reader>=1.8.0",
+    "typer>=0.15.2",
+]
+
+
+[tool.commitizen]
+version = "1.1.0"
+version_files = [
+    "pyproject.toml:version"
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = ["commitizen>=4.4.1", "pre-commit>=4.1.0", "ruff>=0.9.10"]

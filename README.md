@@ -2,63 +2,85 @@
 
 # SC2AnonServerPy
 
-This project is used for weak anonymization of StarCraft II replays for research. Depending on further parsing and extraction implementations this project can assist with replacing toon identifiers (unique) or nicknames (not unique) with a week anonymized ID or a customized function.
+This project is used for weak anonymization of StarCraft II replays for research. Depending on further parsing and extraction implementations this project can assist with replacing toon identifiers (unique) or nicknames (not unique) with a weak anonymized ID or a customized function.
+
+## Installation
+
+> [!NOTE]
+> To run this project there are some prerequisites that you need to have installed on your system:
+> - Docker
+> - **Optional** make (if you do not wish to use make, please refer to the commands defined in the `makefile` and run them manually)
+
+Our prefered way of distributing the toolset is through DockerHub. We use the Docker Image to provide a fully reproducible environment for our scripts.
+
+To pull the image from DockerHub, run the following command:
+
+```bash
+docker pull kaszanas/datasetpreparator:latest
+```
+
+If you wish to clone the repository and build the Docker image yourself, run the following command:
+
+```bash
+make docker_build
+```
 
 ## Usage
 
-- ```grpc_server.py``` - Server used to synchronize anonymization.
-- ```grpc_client.py``` - Client with multiprocessing of replays using gRPC server for persistent anonymization.
 
-1. Install Python 3.7.7
-2. **OPTIONAL**: Create a virtual environment by running the following command (replace ```<path_to_venv>``` with a path) ```python -m venv <path_to_venv>```.
-3. **OPTIONAL**: Activate the environment which You created.
-4. Install ```requirements.txt``` by performing the following command ```pip install -r requirements.t``` In order to begin processing please install ```requirements.txt``` and follow these steps:
+1. Place replays in ```./processing/demos/input``` which is a default path for the replay input.
+2. Open a terminal and run ```make grpc_server```, which is responsible for persistent anonymization process.
+3. Open another terminal and run ```make grpc_client``` with default command line arguments to start up a sample replay processing.
+4. The resulting processed files will be placed in ```./processing/demos/output``` by default.
+5. Turn off the server by a keyboard interrupt (CTRL+C).
 
-5. Place replays in ```./DEMOS/Input``` which is a default path for the replay input.
-6. Run ```python grpc_server.py```, which is responsible for persistent anonymization process.
-7. Run ```python grpc_client.py``` with command line arguments which will start up a sample replay processing usage below:
+### CLI Usage
+
+The ```grpc_server.py``` script is used to start the gRPC anonymization server. The script has the following command line arguments:
 
 ```
-usage: grpc_client.py [-h] [--input_dir INPUT_DIR] [--output_dir OUTPUT_DIR]
-                      [--agents AGENTS] [--chunksize CHUNKSIZE]
-                      [--use_multiprocessing USE_MULTIPROCESSING]
-                      [--anonymize_toon ANONYMIZE_TOON]
-                      [--anonymize_chat ANONYMIZE_CHAT]
+Usage: grpc_server.py [OPTIONS]
 
-StarCraft II replay processing tool that uses multiprocessing.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --input_dir INPUT_DIR
-                        Provide the path to the input directory that contains
-                        .SC2Replay files.
-  --output_dir OUTPUT_DIR
-                        Provide the path to the output directory that will
-                        contain .pickle files.
-  --agents AGENTS       Provide how much agents will be available in the pool
-                        for execution.
-  --chunksize CHUNKSIZE
-                        Provide how much replays are to be processed at once.
-  --use_multiprocessing USE_MULTIPROCESSING
-                        Set this flag to true if You would like to use
-                        multiprocessing.
-  --anonymize_toon ANONYMIZE_TOON
-                        Set this flag to true if You would like to perform
-                        toon/nickname anonymization.
-  --anonymize_chat ANONYMIZE_CHAT
-                        Set this flag to true if You would like to perform
-                        chat anonymization.
+Options:
+  --anonymized-db-path FILE  Path to the .pickle file that will be used to
+                             store anonymized nicknames.  [required]
+  --help                     Show this message and exit.
 ```
 
-8. The resulting processed files will be placed in ```./DEMOS/Output``` by default.
+The ```grpc_client.py``` script is used to start the replay processing. The script has the following command line arguments:
 
-## Notes
+```
+Usage: grpc_client.py [OPTIONS]
 
-If You would like to implement a custom anonymization function please see the ```Listener``` class in ```grpc_server.py```.
+Options:
+  --replay-directory DIRECTORY    Path to the directory that contains
+                                  .SC2Replay files.  [required]
+  --output-directory DIRECTORY    Path to the directory where .pickle files
+                                  for processed replays will be saved.
+                                  [required]
+  --agents INTEGER                Number of multiprocessing agents.  [default:1]
+  --chunksize INTEGER             Number of replays to process by each agent.
+                                  [default: 1]
+  --multiprocessing / --no-multiprocessing
+                                  True if multiprocessing should be used.
+                                  [default: no-multiprocessing]
+  --anonymize-toon / --no-anonymize-toon
+                                  True if the unique toon should be
+                                  anonymized.  [default: anonymize-toon]
+  --anonymize-chat / --no-anonymize-chat
+                                  True if chat should be anonymized.
+                                  [default: anonymize-chat]
+  --help                          Show this message and exit.
+```
+
+
+## Implementation Notes
+
+If You would like to implement a custom anonymization function please see the `Listener` class in `grpc_server.py`.
 
 For the sake of logging and comments when "nickname" is mentioned it means any string that is meant to be anonymized and is sent to the gRPC server for that matter.
 
-Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation and uses https://github.com/ggtracker/sc2reader to perform processing.
+Pleaase keep in mind that the `grpc_client.py` is a sample implementation and uses https://github.com/ggtracker/sc2reader to perform processing.
 
 ## Cite Us!
 
@@ -66,7 +88,7 @@ Pleaase keep in mind that the ```grpc_client.py``` is a sample implementation an
 @software{Bialecki2021,
   author       = {Białecki, Andrzej and
                   Białecki, Piotr},
-  title        = {{Kaszanas/SC2AnonServerPy: 1.0.0 SC2AnonServerPy 
+  title        = {{Kaszanas/SC2AnonServerPy: 1.0.0 SC2AnonServerPy
                    Release}},
   month        = jul,
   year         = 2021,
