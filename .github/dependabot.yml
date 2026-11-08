@@ -6,11 +6,11 @@
 version: 2
 updates:
   - package-ecosystem: "pip" # Updates Python dependencies
-    directory: "/" 
+    directory: "/"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "github-actions" # Updates your GitHub Actions workflows
-    directory: "/" 
+    directory: "/"
     schedule:
       interval: "weekly"
